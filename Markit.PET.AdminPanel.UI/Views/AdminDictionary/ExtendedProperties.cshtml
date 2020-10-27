@@ -1,0 +1,92 @@
+﻿@model Markit.PET.AdminPanel.UI.Models.ExtendedPropertyViewModel
+
+@{
+    ViewBag.Title = "ExtendedProperties";
+}
+
+@section Scripts {
+    <script>
+
+        function ClearContent() {
+            var item = $('#propertyValues')[0];
+            item.innerHTML = "";
+        }
+
+        $('#ddlDatabaseObjects').on('change', function (event) {
+            ClearContent();
+            var form = $(event.target).parents('form');
+            form.submit();
+        });
+
+        function DatabaseChanged() {
+            var businessCategoryID = $('#ddlDatabaseLists').val();
+            ClearContent();
+            $.ajax({
+                url: '/AdminPanel/AdminDictionary/FillDatabaseObjects',
+                type: "GET",
+                dataType: "JSON",
+                data: { databaseID: businessCategoryID },
+                success: function (subCategories) {
+                    $("#ddlDatabaseObjects").html(""); // clear before appending new list
+                    $("#ddlDatabaseObjects").append(
+                        $('<option></option>').val(0).html("Select Database Table"));
+                    $.each(subCategories, function (i, subCategory) {
+                        $("#ddlDatabaseObjects").append(
+                            $('<option></option>').val(subCategory.TableName).html(subCategory.TableName));
+                    });
+                }
+            });
+        }
+    </script>
+}
+@using (Html.BeginForm("ExtendedPropertiesInfo", "AdminDictionary", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    <h1 style="border-bottom:0px!important;padding-bottom:0px!important;" class="row col-md-offset-1">Admin Page for Extended Properties</h1>
+
+    <div class="row" style="margin:25px">
+        <div class="col-md-6">
+            @Html.DropDownListFor(m => m.SelectedDatabase, new SelectList(Model.DatabaseList, "Key", "Value"), "Select Database", new { @id = "ddlDatabaseLists", required = "required", @class = "selectpicker HeadingCaption", data_style = "btn-inverse", @style = "display:inline;width:160px;height: 25px;", @onchange = "DatabaseChanged()" })
+        </div>
+   
+        <div class="col-md-6">
+            @Html.DropDownListFor(m => m.SelectedTable, new SelectList(Model.DatabaseObject, "TableName", "TableName"), new { @id = "ddlDatabaseObjects", @required = "required", @class = "selectpicker HeadingCaption", data_style = "btn-inverse", @style = "display:inline;width:160px;height: 25px;" })
+        </div>
+    </div>
+    <div id="propertyValues">
+        @if (Model.PropertiesValues != null)
+        {
+            <div class="row" style=" margin:5px">
+
+                <div class="row" style="background-color:#fff; border:none!important">
+                    <div class="col-md-3"><label class="HeadingCaption StandardHeading">Object Name</label></div>
+                    <div class="col-md-2"><label class="HeadingCaption StandardHeading">Object Type</label></div>
+                    <div class="col-md-2"><label class="HeadingCaption StandardHeading">Property Name</label></div>
+                    <div class="col-md-5"><label class="HeadingCaption StandardHeading">Detail</label></div>
+                </div>
+            </div>
+            int i = 0;
+            foreach (var item in Model.PropertiesValues)
+            {
+
+                @Html.HiddenFor(m => m.PropertiesValues[i].Major_ID)
+                @Html.HiddenFor(m => m.PropertiesValues[i].ObjectName)
+                @Html.HiddenFor(m => m.PropertiesValues[i].ObjectType)
+                @Html.HiddenFor(m => m.PropertiesValues[i].PropertyName)
+                <div class="row" style=" margin:5px">
+
+                    <div class="row" style="background-color:#fff; border:none!important">
+                        <div class="col-md-3"><label class="StandardTableText">@item.ObjectName</label></div>
+                        <div class="col-md-2"><label class="StandardTableText">@item.ObjectType</label></div>
+                        <div class="col-md-2"><label class="StandardTableText">@item.PropertyName</label></div>
+                        <div class="col-md-5">@Html.TextAreaFor(m => Model.PropertiesValues[i].Value, new { @id = "txtBusinessJustification" + i, @style = "min-width:100%; min-height:75px;", @class = "HeadingCaption", @placeHolder = "Enter Business Justification .", @maxlength = "8999" })</div>
+                    </div>
+                </div>
+                i += 1;
+            }
+        }
+    </div>
+    <input type="submit" formmethod="post" formaction="SaveExtendedProperties" class="btn btn-primary form-control" value="Save" />
+
+}
+
+

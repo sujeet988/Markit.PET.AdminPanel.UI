@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin Panel</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="container body-content">
+        <div class="topbar" cellspacing="0" border="0" cellpadding="0">
+            <div class="col-md-5" style="float: left; top: 5px;">
+                <a href="/"><img src="~/Images/ihsmarkitlogo-white.png" alt="" /></a>
+            </div>
+            <div class="col-md-4">
+                <label class="whiteCaption projectLogo">Admin Panel</label>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer class="page-footer">
+            <div class="col-md-11">&copy; @DateTime.Now.Year - Admin Panel</div>
+            <div class="col-md-1"><a onclick="window.location = 'mailto:MK-ProjectExecutionTools@markit.com'">Contact Us</a></div>
+        </footer>
+    </div>
+
+    @*@Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")*@
+    @RenderSection("scripts", required: false)
+</body>
+</html>     

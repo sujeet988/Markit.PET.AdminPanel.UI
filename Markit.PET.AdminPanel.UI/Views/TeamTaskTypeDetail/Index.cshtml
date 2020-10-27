@@ -1,0 +1,162 @@
+﻿@model Markit.PET.AdminPanel.UI.Models.TeamTaskTypeDetailViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+@section Scripts{
+    <script type="text/javascript">
+
+        function UpdateButtonClicked() {
+            $("#txtTeamName").hide();
+            $('#divEditor').show();
+            $('#btnSave').show();
+            $('#btnUpdate').hide();
+        }
+
+        $("#empName").on("autocompletechange", function (event, ui) {
+            var org = $(this).val();
+            $.ajax(
+                {
+                    url: '/AdminPanel/TeamTaskTypeDetail/GetEmployee',
+                    type: 'GET',
+                    data: { empName: org },
+                    dataType: "JSON",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#empName").val(data.Employee.EmployeeName + ':' + data.Employee.EmployeeUEN);
+                        $("#txtEmpAccountName").text(data.Employee.AccountName);
+                        $("#txtEmpUEN").text(data.Employee.EmployeeUEN);
+                        $("#txtEmpName").text(data.Employee.EmployeeName);
+                        $("#txtTeamName").text(data.Team.TeamName);
+                        $('#btnUpdate').show();
+                        $('#divEditor').hide();
+                        $("#txtTeamName").show();
+
+                        $('#btnSave').hide();
+                    },
+                    error: function (error) {
+                        alert(error);
+                    }
+                });
+        });
+
+        $("#empTeam").on("autocompletechange", function (event, ui) {
+            var org = $(this).val();
+            $.ajax(
+                {
+                    url: '/AdminPanel/TeamTaskTypeDetail/GetTeam',
+                    type: 'GET',
+                    data: { teamName: org },
+                    dataType: "JSON",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#empTeam").val(data.TeamName + ':' + data.TeamLogicalID);
+                        $("#txtTeamID").text(data.TeamID);
+                    },
+                    error: function (error) {
+                        alert(error);
+                    }
+                });
+        });
+
+        $(document).ready(function () {
+            $('#btnUpdate').hide();
+            $('#btnSave').hide();   
+            $('#divEditor').hide();
+
+            $("#empName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/AdminPanel/TeamTaskTypeDetail/SearchEmployee",
+                        type: "GET",
+                        dataType: "json",
+                        data: { Prefix: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.AccountName, value: item.AccountName };
+                            }))
+                        },
+                        error: function (data) {
+                            console.log(data.responseText);
+                        }
+                    })
+                },
+                messages: {
+                    noResults: "", results: function (resultsCount) { }
+                }
+            });
+
+            $("#empTeam").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/AdminPanel/TeamTaskTypeDetail/SearchTeam",
+                        type: "GET",
+                        dataType: "json",
+                        data: { Prefix: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.TeamName, value: item.TeamID };
+                            }))
+                        }
+                    })
+                },
+                messages: {
+                    noResults: "", results: function (resultsCount) { }
+                }
+            });
+        })
+
+    </script>
+}
+<h2>Employee Team Mapping</h2>
+@using (Html.BeginForm("UpdateTeam", "TeamTaskTypeDetail", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.EditorFor(model => model.SelectedEmployee.EmployeeUEN, new { htmlAttributes = new { @id = "empName", @placeholder = "Search Employee Name" } })
+    <br /><br /><br />
+               
+                <div id="formEmployeeTeamMapping" class="row">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label class="StandardHeading">AccountName</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="StandardHeading">EmployeeUEN</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="StandardHeading">EmployeeName</label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="StandardHeading">TeamName</label>
+                        </div>
+
+                    </div>
+                    <br />
+                    <div class="col-md-2">
+                        <label id="txtEmpAccountName" class="HeadingCaption">@Model.SelectedEmployee.AccountName</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label id="txtEmpUEN" class="HeadingCaption">@Model.SelectedEmployee.EmployeeUEN</label>
+                    </div>
+                    <div class="col-md-3">
+                        <label id="txtEmpName" class="HeadingCaption">@Model.SelectedEmployee.EmployeeName</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label id="txtTeamName" class="HeadingCaption">@Model.SelectedTeam.TeamName</label>
+                    </div>
+                    <div class="col-md-4" id="divEditor">
+                        @Html.EditorFor(model => model.SelectedTeam.TeamLogicalID, new { htmlAttributes = new { @id = "empTeam", @placeholder = "Search Team" } })
+                        <label id="txtTeamID" class="HeadingCaption"></label>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="submit" id="btnUpdate" class="btn btn-default form-control" value="Update" onclick="UpdateButtonClicked(); return false;" />
+                    </div>
+                    <div class="col-md-1">
+                        <input type="submit" id="btnSave" class="btn btn-default form-control" value="Save" />
+                    </div>
+                </div>
+}

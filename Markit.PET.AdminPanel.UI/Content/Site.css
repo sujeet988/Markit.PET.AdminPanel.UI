@@ -1,0 +1,94 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+
+.homepage-content {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.homepage a:hover {
+    text-decoration: none;
+}
+
+
+.topbar {
+    background-color: #ececec;
+    background-image: -webkit-linear-gradient(270deg, rgba(0, 142, 137, 0.65), rgba(0, 142, 137, 0.65)), url(../../Content/themes/base/images/ihsmarkit-web.jpg);
+    background-image: -ms-linear-gradient(180deg,rgba(0,142,137,.65),rgba(0,142,137,.65)),url(../../Content/themes/base/images/ihsmarkit-web.jpg);
+    background-image: -moz-linear-gradient(180deg,rgba(0,142,137,.65),rgba(0,142,137,.65)),url(../../Content/themes/base/images/ihsmarkit-web.jpg);
+    background-position: 0 0, 50% 50%;
+    height: 50px;
+}
+
+
+.whiteCaption {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 0 0 0;
+    float: right;
+    margin-top: -10px;
+}
+
+
+
+.projectLogo {
+    float: none;
+    font-size: 30px;
+    padding-top: 15px;
+    font-weight: normal;
+}
+
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open .dropdown-toggle.btn-primary {
+    color: #ffffff;
+    background-color: #00AB4E;
+    border-color: #00AB4E;
+}
+
+.StandardHeading {
+    font-size: 15px;
+    color: #00A9E0;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
+.StandardTableText {
+    font-size: 14px;
+    color: #000;
+    font-weight: normal;
+    white-space: nowrap;
+    word-spacing:normal;
+}
+

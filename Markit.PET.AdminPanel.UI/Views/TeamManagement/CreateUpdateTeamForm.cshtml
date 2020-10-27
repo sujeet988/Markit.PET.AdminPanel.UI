@@ -1,0 +1,133 @@
+﻿@model Markit.PET.AdminPanel.UI.Models.TeamManagementViewModel
+
+@{
+    ViewBag.Title = "CreateUpdateTeam";
+}
+
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $("#orgName").on("autocompletechange", function (event, ui) {
+            var org = $(this).val();
+            $.ajax(
+                {
+                    url: '/AdminPanel/TeamManagement/GetOrg',
+                    type: 'GET',
+                    data: { orgName: org },
+                    dataType: "JSON",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#orgName").val(data.OrgName + ':' + data.LogicalID);
+                        $("#division").text(data.Division);
+                        $("#productGroup").text(data.ProductGroup);
+                        $("#productFamily").text(data.ProductFamily);
+                        $("#l1_Product").text(data.L1_Product);
+                        $("#l2_product").text(data.L2_Product);
+                        $('#organisation').text(data.OrgName);
+                    },
+                    error: function (error) {
+                        alert(error);
+                    }
+                });
+        });
+
+        $(document).ready(function () {
+            $("#orgName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/AdminPanel/TeamManagement/SearchOrg",
+                        type: "GET",
+                        dataType: "json",
+                        data: { Prefix: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.OrgName, value: item.LogicalID };
+                            }))
+                        }
+                    })
+                },
+                messages: {
+                    noResults: "", results: function (resultsCount) { }
+                }
+            });
+        })
+
+    </script>
+}
+<h2>CreateUpdateTeam</h2>
+<br /><br />
+@using (Html.BeginForm("CreateUpdateTeam", "TeamManagement", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.HiddenFor(m => m.SelectedTeam.TeamID)
+    @Html.HiddenFor(m => m.SelectedTeam.TeamLogicalID)
+    @Html.HiddenFor(m => m.SelectedTeam.LogicalOrganisationID)
+    @Html.HiddenFor(m => m.SelectedTeam.LogicalFunactionalAreaID)
+
+
+
+    @Html.HiddenFor(m => m.SelectedOrganisation.LogicalID)
+    @Html.HiddenFor(m => m.SelectedOrganisation.ProductFamily)
+    @Html.HiddenFor(m => m.SelectedOrganisation.ProductGroup)
+
+      <div class="row">
+          <div class="col-md-2"><label class="StandardHeading">Team ID</label></div>
+          <div class="col-md-6">
+              <div class="col-md-1"><label class="StandardHeading">Team Name</label></div>
+          </div>
+          <div class="col-md-4">
+              <div class="col-md-1"><label class="StandardHeading">Organisation Id</label></div>
+          </div>
+      </div>
+
+      <div class="row">
+          <div class="col-md-1">@Model.SelectedTeam.TeamID</div>
+          <div class="col-md-1">@Model.SelectedTeam.TeamLogicalID</div>
+          <div class="col-md-6">
+              @Html.TextBoxFor(m => m.SelectedTeam.TeamName, new { required = "required" })
+          </div>
+          <div class="col-md-4">
+              @Html.EditorFor(model => model.SelectedOrganisation.OrgName, new { htmlAttributes = new { @id = "orgName", @placeholder = "Search Organisation Name", required = "required" } })
+          </div>
+          <br /><br /><br /><br />
+
+          <div>
+              <div class="row">
+                  <div class="col-md-4 editor-label">
+                      <label class="StandardHeading">Organisation</label><span style="color:red;font-size:20px;">*</span>
+                  </div>
+                  <div class="col-md-4 editor-label">
+                      <label class="StandardHeading">Division</label>
+                  </div>
+                  <div class="col-md-4 editor-label">
+                      <label class="StandardHeading">Product Group</label>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-4  editor-field" id="organisation">@Model.SelectedOrganisation.OrgName</div>
+                  <div class="col-md-4  editor-field" id="division">@Model.SelectedOrganisation.Division</div>
+                  <div class="col-md-4  editor-field" id="productGroup">@Model.SelectedOrganisation.ProductGroup</div>
+              </div>
+              <br />
+              <div class="row">
+                  <div class="col-md-4 editor-label">
+                      <label class="StandardHeading">L1 Product</label>
+                  </div>
+                  <div class="col-md-4 editor-label">
+                      <label class="StandardHeading">L2 Product</label>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-4  editor-field" id="l1_Product">@Model.SelectedOrganisation.L1_Product</div>
+                  <div class="col-md-4  editor-field" id="l2_product">@Model.SelectedOrganisation.L2_Product</div>
+              </div>
+          </div>
+      </div>
+    <br />
+    <input class="btn btn-default" type="submit" value="Update" />
+}

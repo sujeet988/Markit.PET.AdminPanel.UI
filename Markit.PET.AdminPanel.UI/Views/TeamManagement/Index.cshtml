@@ -1,0 +1,57 @@
+﻿@model Markit.PET.AdminPanel.UI.Models.TeamManagementViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Team Management</h2>
+<br /><br />
+@{
+    <div id="TeamDetail">
+        <div class="row">
+            <div class="col-md-1">
+                <label class="StandardHeading">Team ID</label>
+            </div>
+            <div class="col-md-1">
+                <label class="StandardHeading">Logical ID</label>
+            </div>
+            <div class="col-md-4">
+                <label class="StandardHeading">Team Name</label>
+            </div>
+            <div class="col-md-2">
+                <label class="StandardHeading">Organisation ID</label>
+            </div>
+            <div class="col-md-2">
+                <label class="StandardHeading">Funactional Area ID</label>
+            </div>
+            <div class="col-md-2">
+                @Html.ActionLink("Create Team", "CreateUpdateTeamForm", "TeamManagement", new { teamID = 0 }, new { style="class:btn btn-primary"})
+            </div>
+        </div>
+        <br /><br />
+        @foreach (var item in Model.TeamList)
+        {
+            <br />
+            <div class="row">
+                <div class="col-md-1">
+                    <label>@item.TeamID</label>
+                </div>
+                <div class="col-md-1">
+                    <label>@item.TeamLogicalID</label>
+                </div>
+                <div class="col-md-4">
+                    <label>@item.TeamName</label>
+                </div>
+                <div class="col-md-2">
+                    <label>@item.LogicalOrganisationID</label>
+                </div>
+                <div class="col-md-2">
+                    <label>@item.LogicalFunactionalAreaID</label>
+                </div>
+                <div class="col-md-2">
+                    @Html.ActionLink("Update", "CreateUpdateTeamForm", "TeamManagement", new { teamID = @item.TeamID }, null)
+                </div>
+            </div>
+        }
+    </div>
+}
